@@ -4,14 +4,12 @@ var Species = function(game){
   this.game = game;
 
   this.group;
-  this.name;
-  this.creatures = [];
+  this.creatures = {};
   this.color = getRandomHex();
   this.name = this.color;
 
-  this.consumes = []; // Species which this species consumes
-  this.evades = []; // Species which this species evades
-
+  this.consumes = {}; // Species which this species consumes
+  this.evades = {}; // Species which this species evades
 
   this.init = function(){
     console.log(this.name, ' species init');
@@ -21,11 +19,9 @@ var Species = function(game){
 
     // Make first creature
     var new_creature = new Creature(game, this);
-    new_creature.name = "givemename";
-    
+
     // Call reproduce here instead of instantiating a way different
     // from how our creature itself will do it
-    this.creatures.push(new_creature);
     this.game.creatures.push(new_creature);
     this.game.species.push(this);
   }
@@ -33,7 +29,6 @@ var Species = function(game){
 
 
 var Creature = function(game, species){
-  this.name;
   this.location;
   this.sprite;
 
@@ -44,11 +39,14 @@ var Creature = function(game, species){
   this.game = game;
   this.alive = false;
   this.color = this.species.color;
+  this.name = randomId();
 
   this.size = 6;
   this.speed = 250;
 
-  this.consumes = [];
+  this.species.creatures[this.name] = this;
+  this.consumes = this.species.consumes;
+  this.evades = this.species.evades;
 
   // Initialize creature (and mark as alive)
   this.init = function(){
@@ -59,6 +57,7 @@ var Creature = function(game, species){
 
     // Assign sprite
     this.sprite = this.game.add.sprite(this.location.x, this.location.y, this.shape());
+    this.sprite.meta = this;
 
     // Add to species group
     this.species.group.add(this.sprite);
@@ -69,7 +68,6 @@ var Creature = function(game, species){
     this.sprite.body.bounce.setTo(1, 1);
     //this.sprite.body.velocity.x = 200;
 
-
     // Start movement
     var randX = getRandomIntInclusive(0, game.world.width);
     var randY = getRandomIntInclusive(0, game.world.height);
@@ -78,7 +76,7 @@ var Creature = function(game, species){
     this.alive = true;
   }
 
-  // Game loop calls act for every creature
+  // Game loo  calls act for every creature
   this.act = function(){
     if (this.alive === false) this.init();
 
@@ -90,7 +88,20 @@ var Creature = function(game, species){
     var new_creature = new Creature(this.game, this.species);
     new_creature.color = this.color;
     new_creature.init();
+  }
 
+
+  this.destroy = function(){
+    console.log(this.name, ' is destroyed!');
+    this.alive = false;
+
+    // Destroy sprite on screen
+    if (this.sprite) this.sprite.destroy();
+
+    // Remove from species catalog
+    delete this.species.creatures[this.name];
+
+    this.alive = false;
   }
 
   // The shape or sprite representing the creature
