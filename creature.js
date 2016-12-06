@@ -41,8 +41,9 @@ var Creature = function(game, species){
   this.color = this.species.color;
   this.name = randomId();
 
+  this.jitter = 1; // Number of seconds before movement change
   this.size = 6;
-  this.speed = 250;
+  this.speed = 30;
 
   this.species.creatures[this.name] = this;
   this.consumes = this.species.consumes;
@@ -66,14 +67,19 @@ var Creature = function(game, species){
     this.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.body.collideWorldBounds = true;
     this.sprite.body.bounce.setTo(1, 1);
-    //this.sprite.body.velocity.x = 200;
+    // this.sprite.body.velocity.x = 200;
 
+    this.findDirection();
+    game.time.events.repeat(Phaser.Timer.SECOND * getRandomIntInclusive(this.jitter, this.jitter*2), Number.MAX_VALUE, this.findDirection, this);
+
+    this.alive = true;
+  }
+
+  this.findDirection = function(){
     // Start movement
     var randX = getRandomIntInclusive(0, game.world.width);
     var randY = getRandomIntInclusive(0, game.world.height);
     this.game.physics.arcade.moveToXY(this.sprite, randX, randY, this.speed);
-
-    this.alive = true;
   }
 
   // Game loo  calls act for every creature
