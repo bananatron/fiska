@@ -1,5 +1,10 @@
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'phaser-example', { 
+  preload: preload, 
+  create: create, 
+  update: update, 
+  render: render 
+});
 
 
 function preload() {
@@ -9,12 +14,6 @@ function preload() {
 
 }
 
-var sprite;
-var sprite2;
-var sprite3;
-var v;
-var m;
-
 function preload(){
   game.stage.disableVisibilityChange = true;
 }
@@ -23,10 +22,11 @@ function create() {
 
   game.creatures = [];
   game.species = [];
+  game.speciesMaximum = game.width/6;
 
   game.physics.startSystem(Phaser.Physics.ARCADE);
 
-  game.stage.backgroundColor = '#124184';
+  game.stage.backgroundColor = '#292924';
 
   // // create a new bitmap data object
   // var bmd = game.add.bitmapData(30,30);
@@ -66,14 +66,18 @@ function create() {
   // sprite3.body.velocity.x = 200;
 
 
-  v = new Species(game);
-  m = new Species(game);
+  var r = new Species(game);
+  var s = new Species(game);
+  var p = new Species(game);
+  
 
-  v.consumes[m.name] = m;
-  m.consumes[v.name] = v;
-
-  v.init();
-  m.init();
+  r.consumes[s.name] = r;
+  s.consumes[p.name] = s;
+  p.consumes[r.name] = p;
+  
+  r.init();
+  s.init();
+  p.init();
 
 }
 
@@ -101,27 +105,30 @@ function update() {
 
 // Handler called from update when two sprites collide
 function collisionHandler (sprite1, sprite2) {
-  game.stage.backgroundColor = getRandomHex();
-  console.log('collide', sprite1, sprite2);
+
+  // T("sin", {freq:getRandomIntInclusive(100, 1000), mul:0.01}).bang().play();
+
+  // game.stage.backgroundColor = getRandomHex();
 
   // * sprite_1.meta is the creature object for the associated sprite
-
   var object1 = sprite1.meta;
   var object2 = sprite2.meta;
 
   // If object1 consumes object 2, kill object 2
   if (object1.consumes[object2.species.name] && object2.alive === true){
-
     // Unless object2 evades object 1
     object2.destroy();
   }
 
-  // If object2 consumes object 1, kill object 1
-  if (object2.consumes[object1.species.name && object1.alive === true]){
+  window.setTimeout(function(){
+    // If object2 consumes object 1, kill object 1
+    if (!object2.consumes[object1.species.name] && object1.alive === true){
+      // Unless object1 evades object2
+      object1.destroy();
+    }
+  }, 500)
 
-    // Unless object1 evades object2
-    object1.destroy();
-  }
+
 }
 
 function render() {
@@ -132,9 +139,6 @@ function render() {
   // game.debug.body(sprite2);
 
 }
-
-
-
 
 
 

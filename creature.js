@@ -4,6 +4,7 @@ var Species = function(game){
   this.game = game;
 
   this.group;
+  this.reproductionRate = 2000;
   this.creatures = {};
   this.color = getRandomHex();
   this.name = this.color;
@@ -51,7 +52,7 @@ var Creature = function(game, species){
 
   // Initialize creature (and mark as alive)
   this.init = function(){
-    console.log(this.name, "is born");
+    // console.log(this.name, "is born");
 
     // Assign a location
     if (!this.location) this.location = getRandomLocation();
@@ -72,11 +73,13 @@ var Creature = function(game, species){
     this.findDirection();
     game.time.events.repeat(Phaser.Timer.SECOND * getRandomIntInclusive(this.jitter, this.jitter*2), Number.MAX_VALUE, this.findDirection, this);
 
+    window.setInterval(this.reproduce.bind(this), this.species.reproductionRate);
     this.alive = true;
   }
 
   this.findDirection = function(){
     // Start movement
+    if (!this.alive) return;
     var randX = getRandomIntInclusive(0, game.world.width);
     var randY = getRandomIntInclusive(0, game.world.height);
     this.game.physics.arcade.moveToXY(this.sprite, randX, randY, this.speed);
@@ -90,15 +93,18 @@ var Creature = function(game, species){
   }
 
   this.reproduce = function(){
-    console.log(this.name, "is reproducing");
+    // console.log(this.name, "is reproducing");
+    if (Object.keys(this.species.creatures).length >= this.game.speciesMaximum) {
+      // console.log('Species max met')
+      return;
+    }
     var new_creature = new Creature(this.game, this.species);
-    new_creature.color = this.color;
     new_creature.init();
   }
 
 
   this.destroy = function(){
-    console.log(this.name, ' is destroyed!');
+    // console.log(this.name, ' is destroyed!');
     this.alive = false;
 
     // Destroy sprite on screen
@@ -107,12 +113,12 @@ var Creature = function(game, species){
     // Remove from species catalog
     delete this.species.creatures[this.name];
 
+    this.game.stage.backgroundColor = getRandomHex();
     this.alive = false;
   }
 
   // The shape or sprite representing the creature
   this.shape = function(){
-    // create a new bitmap data object
     // NOTE The hitbox/bitmapdata size can be larger than the visual size (rect) below
     var bmd = game.add.bitmapData(this.size, this.size);
 
