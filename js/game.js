@@ -28,44 +28,6 @@ function create() {
 
   game.stage.backgroundColor = '#292924';
 
-  // // create a new bitmap data object
-  // var bmd = game.add.bitmapData(30,30);
-
-  // // draw to the canvas context like normal
-  // bmd.ctx.beginPath();
-  // bmd.ctx.rect(0,0,30,30);
-  // bmd.ctx.fillStyle = '#ff0000';
-  // bmd.ctx.fill();
-
-  // //  In this example the little Gameboy sprite can pass through the top/bottom of the Atari sprite
-  // //  Because it's set to ignore collisions on its top/bottom faces.
-
-  // sprite = game.add.sprite(300, 200, 'atari');
-  // sprite.name = 'atari';
-  // game.physics.enable(sprite, Phaser.Physics.ARCADE);
-  // sprite.body.collideWorldBounds = true;
-  // sprite.body.checkCollision.up = false;
-  // sprite.body.checkCollision.down = false;
-  // sprite.body.immovable = true;
-
-  // sprite2 = game.add.sprite(200, 200, bmd);
-
-  // game.physics.enable(sprite2, Phaser.Physics.ARCADE);
-  // sprite2.body.collideWorldBounds = true;
-  // sprite2.body.bounce.setTo(1, 1);
-
-  // sprite3 = game.add.sprite(0, 210, 'gameboy', 4);
-
-  // game.physics.enable(sprite3, Phaser.Physics.ARCADE);
-
-  // sprite3.name = 'gameboy2';
-  // sprite3.body.collideWorldBounds = true;
-  // sprite3.body.bounce.setTo(1, 1);
-
-  // sprite2.body.velocity.y = -200;
-  // sprite3.body.velocity.x = 200;
-
-
   var r = new Species(game);
   var s = new Species(game);
   var p = new Species(game);

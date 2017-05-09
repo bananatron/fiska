@@ -64,10 +64,6 @@ function rgbToHex(r, g, b) {
 }
 
 
-function goToRandomLocation(game){
-
-}
-
 function randomId() {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
